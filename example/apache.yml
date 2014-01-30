@@ -1,5 +1,0 @@
-applications:
-    front:
-        type: apache
-        ports:
-            80: 80
