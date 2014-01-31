@@ -8,17 +8,45 @@
 #board .component {
     position: absolute;
     border: 1px solid #eee;
+    margin-left: 15px;
 
     /* Make sure events are propagated to the JointJS element so, e.g. dragging works.*/
     pointer-events: none;
     -webkit-user-select: none;
 }
 
-#board .component button, .component .create-link {
+#board .component button, #board .component .create-link, #board .component .edit {
     /* Enable interacting with inputs only. */
     pointer-events: auto;
 }
 
+#board .component .content {
+    margin-top: 10px;
+    text-align: center;
+}
+
+#board .component .create-link {
+    position: absolute;
+    left: 50%;
+    margin-left: -10px;
+    top: 40px;
+}
+
+#board .component .edit {
+    position: absolute;
+    right: 3px;
+    top: 40px;
+    width: 15px;
+    border: 0;
+    background: transparent;
+    padding: 0;
+    margin: 0;
+}
+
 #board .generate {
     margin-right: 15px;
+}
+
+.popover {
+    width: 500px;
 }

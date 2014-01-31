@@ -25,6 +25,14 @@ gaudiConfigBuilder.directive("onFinishRender", function ($timeout) {
     };
 });
 
+gaudiConfigBuilder.directive("edit", function ($scope) {
+    return {
+        restrict: 'E',
+        transclude: true,
+        template: 'hohoho'
+    }
+});
+
 gaudiConfigBuilder.controller('componentsController', function ($scope, $http) {
     $http.get('data/components.json').success(function (data) {
         $scope.availableComponents = data;
@@ -54,6 +62,16 @@ gaudiConfigBuilder.controller('boardController', function ($scope) {
         }
     }
 
+    function onOpenDetail() {
+        var currentType = this.get('componentType');
+        $('.component[data-type="' + currentType + '"] .edit')
+            .popover({
+                html: true,
+                content: "<edit type='" + currentType + "'></edit>"
+            })
+            .popover('show');
+    }
+
     $("#graphContainer").droppable({
         accept: '.list-group-item',
         drop: function (event, ui) {
@@ -67,16 +85,18 @@ gaudiConfigBuilder.controller('boardController', function ($scope) {
 
             var rect = new joint.shapes.html.GaudiGraphComponent({
                 position: { x: left, y: top },
-                size: { width: 100, height: 30 },
+                size: { width: 150, height: 60 },
                 label: element.innerHTML.trim(),
                 componentType: componentType
             });
 
             graph.addCell(rect);
             rect.on('createLink', onCreateLink);
+            rect.on('onOpenDetail', onOpenDetail);
 
             $scope.components[componentType] = {
                 type: componentType,
+                name: componentType,
                 links: []
             };
         }
