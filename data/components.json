@@ -1,0 +1,18 @@
+{
+    "apache": {
+        "name": "Apache",
+        "custom": {
+            "fastCgi": {"label": "Forward fast CGI to :", "type": "link"},
+            "documentRoot": {"label": "DocumentRoot :", "type": "text", "default": "/var/www"},
+            "modules": {"label": "PHP modules :", "type": "choices"}
+        }
+    },
+    "mysql": {
+        "name": "MySQL",
+        "custom": {
+        }
+    },
+    "php-fpm": {
+        "name": "PHP-FPM"
+    }
+}
