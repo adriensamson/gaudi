@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="css/bootstrap.min.css"/>
     <link rel="stylesheet" href="css/bootstrap-theme.min.css"/>
     <link rel="stylesheet" href="css/jquery-ui-1.10.4.custom.min.css"/>
+    <link rel="stylesheet" href="css/joint.nojquery.min.css"/>
     <link rel="stylesheet" href="css/app.css"/>
 </head>
 <body>
@@ -17,14 +18,18 @@
         <div class="row">
             <section class="col-md-3" ng-controller="componentsController">
                 <ul class="components list-group">
-                    <li class="list-group-item" ng-repeat="component in components" on-finish-render="onDisplayComponents">
+                    <li class="list-group-item" ng-repeat="(type, component) in availableComponents" data-type="{{ type }}" on-finish-render="onDisplayComponents">
                         {{ component.name }}
                     </li>
                 </ul>
             </section>
 
             <section id="board" class="col-md-9" ng-controller="boardController">
+                <div id="graphContainer"></div>
 
+                <div class="row">
+                    <button type="button" class="generate btn btn-primary pull-right" ng-click="generateFile()">Generate</button>
+                </div>
             </section>
         </div>
     </div>
@@ -33,6 +38,11 @@
     <script type="text/javascript" src="js/lib/jquery-2.1.0.min.js"></script>
     <script type="text/javascript" src="js/lib/jquery-ui-1.10.4.custom.min.js"></script>
     <script type="text/javascript" src="js/lib/bootstrap.min.js"></script>
-    <script type="text/javascript" src="js/gaudiConfigBuilder.js"></script>
+    <script type="text/javascript" src="js/lib/joint.nojquery.min.js"></script>
+    <script type="text/javascript" src="js/lib/yaml/YamlDumper.js"></script>
+    <script type="text/javascript" src="js/lib/yaml/YamlInline.js"></script>
+    <script type="text/javascript" src="js/lib/yaml/YamlEscaper.js"></script>
+    <script type="text/javascript" src="js/gaudi-graph-element.js"></script>
+    <script type="text/javascript" src="js/gaudi-config-builder.js"></script>
 </body>
 </html>
