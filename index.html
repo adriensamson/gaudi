@@ -16,39 +16,52 @@
         </div>
 
         <div class="row">
-            <section class="col-md-3" ng-controller="componentsController">
-                <ul class="components list-group">
+            <section class="col-md-3">
+                <ul class="components list-group" ng-controller="componentsController">
                     <li class="list-group-item" ng-repeat="(type, component) in availableComponents" data-type="{{ type }}" on-finish-render="onDisplayComponents">
                         {{ component.name }}
                     </li>
                 </ul>
+
+                <div class="result" ng-controller="resultController">
+                    <pre>{{ getFileResult() }}</pre>
+
+                    <div class="row">
+                        <button type="button" class="generate btn btn-primary pull-right" ng-click="generateFile()">Download</button>
+                    </div>
+                </div>
             </section>
 
             <section id="board" class="col-md-9" ng-controller="boardController">
                 <div id="graphContainer"></div>
-
-                <div class="row">
-                    <button type="button" class="generate btn btn-primary pull-right" ng-click="generateFile()">Generate</button>
-                </div>
             </section>
         </div>
     </div>
 
-    <script type="text/ng-template" id="edit.html">
-        <form action="#">
-            <label for="name">Name: </label>
-            <input type="text" id="name" name="name" value="{{ name }}" />
-        </form>
+    <script type="text/ng-template" id="edit-component.html">
+        <div class="modal-body">
+            <form action="#">
+                <label for="name">Name: </label>
+                <input type="text" id="name" name="name" ng-model="values.name" />
+            </form>
+            <div class="modal-footer">
+                <button class="btn btn-primary" ng-click="ok()">OK</button>
+                <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+            </div>
+        </div>
     </script>
 
     <script type="text/javascript" src="js/lib/angular.min.js"></script>
     <script type="text/javascript" src="js/lib/jquery-2.1.0.min.js"></script>
     <script type="text/javascript" src="js/lib/jquery-ui-1.10.4.custom.min.js"></script>
     <script type="text/javascript" src="js/lib/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/lib/ui-bootstrap-custom-0.10.0.min.js"></script>
+    <script type="text/javascript" src="js/lib/ui-bootstrap-custom-tpls-0.10.0.min.js"></script>
     <script type="text/javascript" src="js/lib/joint.nojquery.min.js"></script>
     <script type="text/javascript" src="js/lib/yaml/YamlDumper.js"></script>
     <script type="text/javascript" src="js/lib/yaml/YamlInline.js"></script>
     <script type="text/javascript" src="js/lib/yaml/YamlEscaper.js"></script>
+
     <script type="text/javascript" src="js/gaudi-graph-element.js"></script>
     <script type="text/javascript" src="js/gaudi-config-builder.js"></script>
 </body>

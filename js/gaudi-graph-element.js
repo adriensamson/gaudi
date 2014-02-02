@@ -1,4 +1,4 @@
-/* global: $,joint,_*/
+/*global $,joint,_,g*/
 joint.shapes.html = {};
 
 joint.shapes.html.GaudiGraphComponent = joint.shapes.basic.Rect.extend({
@@ -20,11 +20,11 @@ joint.shapes.html.ElementView = joint.dia.ElementView.extend({
         '<button class="close">&times;</button>',
         '<div class="content"></div>',
         '<div class="create-link glyphicon glyphicon-record"></div>',
-        '<button class="edit glyphicon glyphicon-wrench" data-toggle="popover" data-container="body" ></button>',
+        '<button class="edit glyphicon glyphicon-wrench" data-container="body"></button>',
         '</div>'
     ].join(''),
 
-    initialize: function() {
+    initialize: function () {
         _.bindAll(this, 'updateBox');
         joint.dia.ElementView.prototype.initialize.apply(this, arguments);
 
@@ -35,7 +35,7 @@ joint.shapes.html.ElementView = joint.dia.ElementView.extend({
 
         this.updateBox();
     },
-    render: function() {
+    render: function () {
         joint.dia.ElementView.prototype.render.apply(this, arguments);
         this.paper.$el.prepend(this.$box);
         this.updateBox();
@@ -52,13 +52,15 @@ joint.shapes.html.ElementView = joint.dia.ElementView.extend({
         return this;
     },
 
-    updateBox: function() {
+    updateBox: function () {
         var bbox = this.model.getBBox();
 
         this.$box.css({ width: bbox.width, height: bbox.height, left: bbox.x, top: bbox.y, transform: 'rotate(' + (this.model.get('angle') || 0) + 'deg)' });
     },
 
     removeBox: function (evt) {
+        this.model.trigger('onRemove');
+
         this.$box.remove();
     },
 
@@ -69,12 +71,11 @@ joint.shapes.html.ElementView = joint.dia.ElementView.extend({
     },
 
     createLink: function (evt) {
-        var self = this;
-        var papperOffset = this.paper.$el.offset();
-        var targetOffset = $(evt.target).offset();
-
-        var x = targetOffset.left - papperOffset.left;
-        var y = targetOffset.top  - papperOffset.top;
+        var self = this,
+            paperOffset = this.paper.$el.offset(),
+            targetOffset = $(evt.target).offset(),
+            x = targetOffset.left - paperOffset.left,
+            y = targetOffset.top  - paperOffset.top;
 
         this.link = new joint.dia.Link({
             source: {id: this.model.get('id')},
@@ -90,15 +91,22 @@ joint.shapes.html.ElementView = joint.dia.ElementView.extend({
 
         // marker arrow color change
         this.link.on('remove', function (lnk) {
-            self.model.trigger('onUnLink', lnk.get('target').id);
+            self.model.trigger('removeLink', lnk.get('source').id, lnk.get('target').id);
         });
 
         this.link.on('change:target', function (lnk) {
             var target = lnk.get('target');
-            if (typeof(target.id) === 'undefined') {
-                // @TODO : Check if we hit a component
-                var el = document.elementFromPoint(target.x, target.y);
 
+            // Check if the second arrow is uppon a rect at the first d&d (at the second jointjs will handle it correctly)
+            if (typeof (target.id) === 'undefined') {
+                var rect = self.paper.findViewsFromPoint(g.point(target.x, target.y))[0];
+                if (!rect || lnk.get('source').id === rect.model.get('id')) {
+                    return;
+                }
+
+                target = rect;
+                target.$el.addClass('arrowOver');
+                lnk.set('target', {id: target.model.get('id')});
                 return;
             }
 
