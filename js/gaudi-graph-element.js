@@ -44,16 +44,24 @@ joint.shapes.html.ElementView = joint.dia.ElementView.extend({
         this.$box.find('.edit').on('click', this.triggerOpenDetail.bind(this));
         this.$box.find('.close').on('click', _.bind(this.model.remove, this.model));
         this.$box.attr('data-type', this.model.get('componentType'));
-        this.$box.find('.content').text(this.model.get('label'));
+        this.$box.find('.content').html(this.model.get('label'));
 
         this.paper.$el.mousemove(this.onMouseMove.bind(this));
         this.paper.$el.mouseup(this.onMouseUp.bind(this));
 
+        this.updateName();
+
         return this;
+    },
+
+    updateName: function () {
+        this.$box.find('.name').html(this.model.get('name'));
     },
 
     updateBox: function () {
         var bbox = this.model.getBBox();
+
+        this.updateName();
 
         this.$box.css({ width: bbox.width, height: bbox.height, left: bbox.x, top: bbox.y, transform: 'rotate(' + (this.model.get('angle') || 0) + 'deg)' });
     },

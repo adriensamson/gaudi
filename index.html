@@ -15,20 +15,17 @@
             <h1>Gaudi configuration file maker</h1>
         </div>
 
-        <div class="row">
-            <section class="col-md-3">
+        <div class="row content">
+            <section class="col-md-3 sidebar">
                 <ul class="components list-group" ng-controller="componentsController">
-                    <li class="list-group-item" ng-repeat="(type, component) in availableComponents" data-type="{{ type }}" on-finish-render="onDisplayComponents">
-                        {{ component.name }}
+                    <li class="list-group-item clearfix" ng-repeat="(type, component) in availableComponents" data-type="{{ type }}" on-finish-render="onDisplayComponents">
+                        <img ng-src="{{ component.logo }}" alt="{{ component.name }}" /> <span class="name">{{ component.name }}</span>
                     </li>
                 </ul>
 
-                <div class="result" ng-controller="resultController">
+                <div id="result" ng-controller="resultController">
                     <pre>{{ getFileResult() }}</pre>
-
-                    <div class="row">
-                        <button type="button" class="generate btn btn-primary pull-right" ng-click="generateFile()">Download</button>
-                    </div>
+                    <button type="button" class="generate btn btn-primary pull-right" ng-click="generateFile()">Download</button>
                 </div>
             </section>
 
@@ -38,12 +35,31 @@
         </div>
     </div>
 
+    <script type="text/ng-template" id="edit-attribute.html">
+        <label for="{{ name }}">{{ field.label }}</label>
+
+        <input id="{{ name }}" ng-switch-when="text" type="text" ng-model="values[fieldsType][name]" ng-init="values[fieldsType][name]=field.default" />
+
+        <select id="{{ name }}" ng-switch-when="link" ng-model="values[fieldsType][name]" ng-options="option as option for option in componentNames"></select>
+
+        <select id="{{ name }}" ng-switch-when="links" ng-model="values[fieldsType][name]" multiple ng-multiple="true" ng-options="option as option for option in componentNames"></select>
+
+        <select id="{{ name }}" ng-switch-when="choice" ng-model="values[fieldsType][name]" ng-options="option as option for option in field.choices"></select>
+
+        <select id="{{ name }}" ng-switch-when="choices" ng-model="values[fieldsType][name]" multiple ng-multiple="{{ field.multiple }}" ng-options="option as option for option in field.choices"></select>
+    </script>
+
     <script type="text/ng-template" id="edit-component.html">
         <div class="modal-body">
             <form action="#">
                 <label for="name">Name: </label>
                 <input type="text" id="name" name="name" ng-model="values.name" />
+
+                <div class="{{fieldsType}}" ng-repeat="fieldsType in ['standard', 'custom']">
+                    <div class="form-field" ng-include="'edit-attribute.html'" ng-repeat="(name, field) in fields[fieldsType]"  ng-switch="field.type"></div>
+                </div>
             </form>
+
             <div class="modal-footer">
                 <button class="btn btn-primary" ng-click="ok()">OK</button>
                 <button class="btn btn-warning" ng-click="cancel()">Cancel</button>

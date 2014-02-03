@@ -7,13 +7,16 @@ var graph = new joint.dia.Graph;
 var paper = new joint.dia.Paper({
     el: $('#graphContainer'),
     width: '100%',
-    height: 500,
+    height: $('.sidebar').height(),
     gridSize: 1,
     model: graph
 });
 
-gaudiConfigBuilder.factory('components', function () {
-    return {};
+gaudiConfigBuilder.factory('builder', function () {
+    return {
+        components: {},
+        availableComponents: {}
+    };
 });
 
 gaudiConfigBuilder.directive("onFinishRender", function ($timeout) {
@@ -29,9 +32,16 @@ gaudiConfigBuilder.directive("onFinishRender", function ($timeout) {
     };
 });
 
-gaudiConfigBuilder.controller('componentsController', function ($scope, $http) {
+gaudiConfigBuilder.directive("text", function () {
+
+});
+
+gaudiConfigBuilder.controller('componentsController', function ($scope, $http, builder) {
+    $scope.availableComponents = {};
+
     $http.get('data/components.json').success(function (data) {
         $scope.availableComponents = data;
+        builder.availableComponents = data;
     });
 
     function initDraggable() {
@@ -45,8 +55,8 @@ gaudiConfigBuilder.controller('componentsController', function ($scope, $http) {
 });
 
 
-gaudiConfigBuilder.controller('boardController', function ($scope, $modal, components) {
-    $scope.components = components;
+gaudiConfigBuilder.controller('boardController', function ($scope, $modal, builder) {
+    $scope.components = builder.components;
 
     function onCreateLink(targetId) {
         var name = this.get('name'),
@@ -75,23 +85,18 @@ gaudiConfigBuilder.controller('boardController', function ($scope, $modal, compo
 
     function onRemove() {
         var name = this.get('name'),
-            componentName,
-            component,
             position;
 
         // Remove element
         delete $scope.components[name];
 
         // Remove links
-        for (componentName in $scope.components) {
-            if ($scope.components.hasOwnProperty(componentName)) {
-                component = $scope.components[componentName];
-
-                if ((position = $.inArray(name, component.links)) >= 0) {
-                    component.links = component.links.splice(position, 1);
-                }
+        angular.forEach($scope.components, function (componentName, component) {
+            if ((position = $.inArray(name, component.links)) >= 0) {
+                component.links = component.links.splice(position, 1);
             }
-        }
+        });
+
         $scope.$apply();
     }
 
@@ -121,22 +126,25 @@ gaudiConfigBuilder.controller('boardController', function ($scope, $modal, compo
                 delete $scope.components[componentName];
 
                 // Update links name of other components
-                for (otherName in $scope.components) {
-                    if (!$scope.components.hasOwnProperty(otherName)) {
-                        continue;
-                    }
+                angular.forEach($scope.components, function (otherName, otherComponent) {
 
-                    otherComponent = $scope.components[otherName];
-                    for (linkIdx in otherComponent.links) {
-                        if (!otherComponent.links.hasOwnProperty(linkIdx)) {
-                            continue;
-                        }
-
+                    angular.forEach(otherComponent.links, function (linkIdx, link) {
                         if (otherComponent.links[linkIdx] === componentName) {
                             otherComponent.links[linkIdx] = formData.name;
                         }
+                    });
+                });
+
+                // Update the name of the graph element
+                var rects = graph.getElements(),
+                    rectName,
+                    rect;
+
+                angular.forEach(rects, function (rectName, rect) {
+                    if (rect.get('name') === componentName) {
+                        rect.set('name', formData.name);
                     }
-                }
+                });
             }
 
             $scope.components[formData.name] = formData.values;
@@ -169,7 +177,7 @@ gaudiConfigBuilder.controller('boardController', function ($scope, $modal, compo
 
             rect = new joint.shapes.html.GaudiGraphComponent({
                 position: { x: left, y: top },
-                size: { width: 150, height: 60 },
+                size: { width: 150, height: 90 },
                 label: element.innerHTML.trim(),
                 name: name
             });
@@ -190,8 +198,8 @@ gaudiConfigBuilder.controller('boardController', function ($scope, $modal, compo
     });
 });
 
-gaudiConfigBuilder.controller('resultController', function ($scope, components) {
-    $scope.components = components;
+gaudiConfigBuilder.controller('resultController', function ($scope, builder) {
+    $scope.components = builder.components;
 
     $scope.getFileResult = function () {
         var results = $scope.components ? {applications: $scope.components} : "";
@@ -209,12 +217,32 @@ gaudiConfigBuilder.controller('resultController', function ($scope, components) 
     };
 });
 
-gaudiConfigBuilder.controller('editComponentController', function ($scope, $modalInstance, values) {
+gaudiConfigBuilder.controller('editComponentController', function ($scope, $modalInstance, $compile, builder, values) {
+    // Inject fields types
+    $scope.fields = {};
+    $scope.fields.custom = builder.availableComponents[values.type].customFields;
+    $scope.fields.standard = builder.availableComponents[values.type].fields;
+
+    // Inject fields values
+    $scope.componentNames = Object.keys(builder.components);
     $scope.values = values;
+    $scope.values.custom = $scope.values.custom || {};
+    $scope.values.standard = $scope.values.standard || {};
 
     $scope.ok = function () {
         var name = $scope.values.name;
         delete $scope.values.name;
+
+        // Merge standard values with root element
+        angular.forEach($scope.values.standard, function (standardValue, standardName) {
+            $scope.values[standardName] = standardValue;
+        });
+
+        delete $scope.values.standard;
+
+        if (!Object.keys($scope.values.custom).length) {
+            delete $scope.values.custom;
+        }
 
         $modalInstance.close({name: name, values: $scope.values});
     };
