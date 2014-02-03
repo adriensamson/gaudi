@@ -9,7 +9,7 @@
         "customFields": {
             "fastCgi": {"label": "Forward fast CGI to :", "type": "link"},
             "documentRoot": {"label": "DocumentRoot :", "type": "text", "default": "/var/www"},
-            "modules": {"label": "PHP modules :", "type": "choices", "choices": ["gd", "apc", "zip"]}
+            "modules": {"label": "Modules :", "type": "choices", "choices": ["rewrite", "alias", "auth_basic", "auth_digest", "ssl"]}
         }
     },
     "nginx": {
@@ -54,7 +54,8 @@
         "logo": "./img/logos/php.png",
         "fields": {
             "ports" : {"label": "Ports :", "type": "text", "default": "9000:9000", "multiple": true},
-            "volumes" : {"label": "Volumes :", "type": "text", "default": ".: /var/www", "multiple": true}
+            "volumes" : {"label": "Volumes :", "type": "text", "default": ".: /var/www", "multiple": true},
+            "modules": {"label": "Modules :", "type": "choices", "choices": ["gd", "apc", "zip"]}
         }
     },
     "nodejs": {

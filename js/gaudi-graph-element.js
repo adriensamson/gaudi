@@ -17,10 +17,12 @@ joint.shapes.html.ElementView = joint.dia.ElementView.extend({
 
     template: [
         '<div class="component">',
-        '<button class="close">&times;</button>',
-        '<div class="content"></div>',
-        '<div class="create-link glyphicon glyphicon-record"></div>',
+        '<div class="element"></div>',
+        '<div class="tools">',
         '<button class="edit glyphicon glyphicon-wrench" data-container="body"></button>',
+        '<div class="create-link glyphicon glyphicon-record"></div>',
+        '<button class="close">&times;</button>',
+        '</div>',
         '</div>'
     ].join(''),
 
@@ -44,7 +46,7 @@ joint.shapes.html.ElementView = joint.dia.ElementView.extend({
         this.$box.find('.edit').on('click', this.triggerOpenDetail.bind(this));
         this.$box.find('.close').on('click', _.bind(this.model.remove, this.model));
         this.$box.attr('data-type', this.model.get('componentType'));
-        this.$box.find('.content').html(this.model.get('label'));
+        this.$box.find('.element').html(this.model.get('label'));
 
         this.paper.$el.mousemove(this.onMouseMove.bind(this));
         this.paper.$el.mouseup(this.onMouseUp.bind(this));

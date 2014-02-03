@@ -2,18 +2,30 @@ html, body, .container-fluid, .sidebar {
     height:100%;
 }
 
+.page-header {
+    margin: 0 0 10px 0;
+    padding: 15px;
+    color: #fff;
+    position: absolute;
+    left: 0;
+    width: 100%;
+
+    background-color: #49ae80;
+    background-image: linear-gradient(to bottom,#4cb183 0,#49ae80 100%);
+    border-bottom: 1px solid #c1c1c1;
+}
+
+.page-header h1 {
+    margin-top: 5px;
+    height: 30px;
+}
+
+.fork img {
+    z-index: 2;
+}
 .content {
+    margin-top: 90px;
     height: 85%;
-}
-
-.components {
-    height: 45%;
-    overflow-y: scroll;
-}
-
-.components img {
-    vertical-align:middle;
-    margin-right: 20px;
 }
 
 #result {
@@ -37,13 +49,30 @@ html, body, .container-fluid, .sidebar {
 
 #board .component {
     position: absolute;
-    border: 1px solid #eee;
     margin-left: 15px;
+    padding: 5px 15px 10px 15px;
     background-color: #fff;
+    border: 1px solid #eee;
+    border-radius: 5px;
 
     /* Make sure events are propagated to the JointJS element so, e.g. dragging works.*/
     pointer-events: none;
     -webkit-user-select: none;
+}
+
+#board .component .element {
+    height: 70px;
+}
+
+#board .component .tools {
+    position: absolute;
+    top: 68px;
+    width: 216px;
+    left: 0;
+    border-top: 1px solid #c1c1c1;
+    height: 22px;
+    border-radius: 0 0 5px 5px;
+    background-color: #eee;
 }
 
 #board .component button, #board .component .create-link, #board .component .edit {
@@ -55,33 +84,81 @@ html, body, .container-fluid, .sidebar {
     padding-left: 5px;
 }
 
-#board .component .content {
-    margin-top: 10px;
-    text-align: center;
-}
-
-#board .component .create-link {
-    position: absolute;
-    left: 50%;
-    margin-left: -10px;
-    top: 70px;
-}
-
 #board .component .edit {
     position: absolute;
-    right: 3px;
-    top: 70px;
-    width: 15px;
+    top: 3px;
+    left: 5px;
+    width: 16px;
     border: 0;
     background: transparent;
     padding: 0;
     margin: 0;
 }
 
-#board .generate {
-    margin-right: 15px;
+#board .component .create-link {
+    position: absolute;
+    left: 50%;
+    top: 2px;
+    margin-left: -10px;
+    width: 16px;
+}
+
+#board .component .close {
+    position: absolute;
+    right: 5px;
+    top: -3px;
+    opacity: 1;
+}
+
+#result .generate, .modal-footer .btn-primary {
+    border: 1px solid #c1c1c1;;
+    background-color: #49ae80;
+    background-image: linear-gradient(to bottom,#4cb183 0,#49ae80 100%);
+}
+
+.modal-footer .btn-warning {
+    border: 1px solid #c1c1c1;;
+    background-color: #c1c1c1;
+    background-image: linear-gradient(to bottom,#dcdcdc 0,#c1c1c1 100%);
+}
+
+#result p {
+    padding: 0;
+    font-size: 18px;
+}
+
+#result p a {
+    color: #49ae80;
 }
 
 .popover {
     width: 500px;
+}
+
+.components.list-group {
+    box-shadow: none;
+    -webkit-box-shadow:none;
+    margin-left: 0;
+}
+
+.components .list-group-item.col-md-6 {
+    height: 70px;
+    width: 48%;
+    margin: 2px;
+}
+
+.component img {
+    margin-right: 20px;
+}
+
+.component .element {
+    position: relative;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
+.component.fixed .element {
+    cursor: default!important;
 }

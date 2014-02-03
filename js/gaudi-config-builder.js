@@ -45,7 +45,7 @@ gaudiConfigBuilder.controller('componentsController', function ($scope, $http, b
     });
 
     function initDraggable() {
-        $(".components li").draggable({
+        $(".components li:not([class*='fixed'])").draggable({
             revert: "invalid",
             helper: "clone"
         });
@@ -177,8 +177,8 @@ gaudiConfigBuilder.controller('boardController', function ($scope, $modal, build
 
             rect = new joint.shapes.html.GaudiGraphComponent({
                 position: { x: left, y: top },
-                size: { width: 150, height: 90 },
-                label: element.innerHTML.trim(),
+                size: { width: 216, height: 90 },
+                label: $(element).find('.element').html().trim(),
                 name: name
             });
 
