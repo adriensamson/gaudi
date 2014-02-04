@@ -118,16 +118,11 @@ gaudiConfigBuilder.controller('boardController', function ($scope, $modal, build
         });
 
         editModal.result.then(function (formData) {
-            var otherName,
-                otherComponent,
-                linkIdx;
-
             if (formData.name !== componentName) {
                 delete $scope.components[componentName];
 
                 // Update links name of other components
                 angular.forEach($scope.components, function (otherName, otherComponent) {
-
                     angular.forEach(otherComponent.links, function (linkIdx, link) {
                         if (otherComponent.links[linkIdx] === componentName) {
                             otherComponent.links[linkIdx] = formData.name;
@@ -135,12 +130,9 @@ gaudiConfigBuilder.controller('boardController', function ($scope, $modal, build
                     });
                 });
 
-                // Update the name of the graph element
-                var rects = graph.getElements(),
-                    rectName,
-                    rect;
-
-                angular.forEach(rects, function (rectName, rect) {
+                // Update the name of the jointjs graph element
+                var rects = graph.getElements();
+                angular.forEach(rects, function (rect) {
                     if (rect.get('name') === componentName) {
                         rect.set('name', formData.name);
                     }

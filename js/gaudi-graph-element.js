@@ -92,8 +92,9 @@ joint.shapes.html.ElementView = joint.dia.ElementView.extend({
             target: g.point(x, y),
             z: -1,
             attrs: {
-                '.connection': { stroke: 'black', 'stroke-width': 6, opacity: .1 },
-                '.marker-target': { stroke: 'black', 'stroke-width': 2, d: 'M 20 0 L 0 10 L 20 20 z' },
+                '.connection': { stroke: '#49ae80', 'stroke-width': 6, opacity: 0.5 },
+                '.marker-target': { stroke: '#49ae80', fill: '#49ae80', 'stroke-width': 2, d: 'M 10 0 L 0 5 L 10 10 z' },
+                '.marker-source': { stroke: '#49ae80', fill: '#49ae80', 'stroke-width': 2, d: 'M 10 0 L 0 5 L 10 10 z' },
                 '.marker-vertices': {display: 'none'}
             }
         });
