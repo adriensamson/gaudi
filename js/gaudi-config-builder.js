@@ -149,9 +149,15 @@ gaudiConfigBuilder.controller('boardController', function ($scope, $modal, build
         }
 
         var infos = type.split('-'),
-            nb = typeof (infos[1]) === 'undefined' ? 1 : Number(infos[1]) + 1;
+            nbInfos = infos.length,
+            newName;
 
-        return getElementName(infos[0] + '-' + nb);
+        if (nbInfos > 1 && parseInt(infos[nbInfos - 1], 10) > 0) {
+            newName = infos.slice(0, nbInfos - 1).join('-') + '-' + (Number(infos[nbInfos - 1]) + 1);
+        } else {
+            newName = type + '-' + 1;
+        }
+        return getElementName(newName);
     }
 
     $("#graphContainer").droppable({
